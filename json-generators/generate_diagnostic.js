@@ -22,7 +22,7 @@ var ELEMENT_TYPE_ENUM = {
 	ADVICE : "ADV"
 }
 
-var ATTRIBUTS_ELEMENT_TYPE = { "DIAG" : "diagnostic", "ANA" : "analyse", "ADV" : "advice"};
+var ATTRIBUTS_ELEMENT_TYPE = { "DIAG" : "diagnostic", "ANA" : "analyse", "ADV" : "advices"};
 
 // Loop 
 for(var index in json_sheet){
@@ -32,10 +32,10 @@ for(var index in json_sheet){
 
 	
 	if(element[EMOTIONS] != undefined && element[ELEMENT_TYPE] != undefined){
-		emotion = element[EMOTIONS];
+		emotion = element[EMOTIONS].trim();
 
 		if(results[emotion] == undefined){
-			results[emotion] = {};
+			results[emotion] = {"diagnostic" : {},"analyse":{},"advices":[]};
 		}
 		
 

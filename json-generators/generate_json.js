@@ -24,7 +24,9 @@ var ELEMENT_TYPE_ENUM = {
 }
 
 var CONTENT_TYPE_ENUM = {
+	TEXT_IMAGES : "TEXT_IMAGES",
 	TEXT : "TEXT",
+	IMAGES : "IMAGES",
 	IMAGE : "IMAGE"
 }
 
@@ -36,8 +38,8 @@ for(var index in json_sheet){
 	if(	element[ELEMENT_TYPE] === ELEMENT_TYPE_ENUM.Q 
 			&& currentId !== element[ID] 
 			&& quizzMap[element[ID]] === undefined 
-			&& element[CONTENT_TYPE] !== undefined 
-			&& element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT){//v 0.1 select just text question
+			&& element[CONTENT_TYPE] !== undefined
+			&& (element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT || element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.IMAGES || element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT_IMAGES)){//v 0.2 select just text & images question
 		currentId = element[ID];
 
 		quizzMap[currentId] = { "id" : currentId};
@@ -46,7 +48,7 @@ for(var index in json_sheet){
 
 		quizzMap[currentId]["question"] = {};
 		quizzMap[currentId]["question"]["type"] = element[CONTENT_TYPE];
-		if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT)
+		if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT || element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT_IMAGES)
 			quizzMap[currentId]["question"]["text"] = { "default" : element[LANGUAGE_DEFAULT], "fr" :  element[LANGUAGE_FR], "en" :  element[LANGUAGE_EN], "de" :  element[LANGUAGE_DE] };
 		quizzMap[currentId]["responses"] = [];
 		
@@ -62,6 +64,7 @@ for(var index in json_sheet){
 		if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT){
 			response["text"] = { "default" : element[LANGUAGE_DEFAULT], "fr" :  element[LANGUAGE_FR], "en" :  element[LANGUAGE_EN], "de" :  element[LANGUAGE_DE] };
 		}else if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.IMAGE){
+
 			response["image"] = element[LANGUAGE_DEFAULT];
 		}
 
