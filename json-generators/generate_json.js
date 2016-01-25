@@ -24,9 +24,14 @@ var ELEMENT_TYPE_ENUM = {
 }
 
 var CONTENT_TYPE_ENUM = {
+	//QUESTIONS
 	TEXT_IMAGES : "TEXT_IMAGES",
-	TEXT : "TEXT",
 	IMAGES : "IMAGES",
+	PHY : "PHY",
+	//QUESTIONS || RESPONSES
+	TEXT : "TEXT",
+	//RESPONSES
+	PICTO : "PICTO",
 	IMAGE : "IMAGE"
 }
 
@@ -39,7 +44,11 @@ for(var index in json_sheet){
 			&& currentId !== element[ID] 
 			&& quizzMap[element[ID]] === undefined 
 			&& element[CONTENT_TYPE] !== undefined
-			&& (element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT || element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.IMAGES || element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT_IMAGES)){//v 0.2 select just text & images question
+			&& (element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT //v 0.3 TEXT
+				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.IMAGES //IMAGES
+				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT_IMAGES //TEXT_IMAGES
+				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.PHY //PHYSIOGNOMY
+		)){
 		currentId = element[ID];
 
 		quizzMap[currentId] = { "id" : currentId};
@@ -48,8 +57,16 @@ for(var index in json_sheet){
 
 		quizzMap[currentId]["question"] = {};
 		quizzMap[currentId]["question"]["type"] = element[CONTENT_TYPE];
-		if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT || element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT_IMAGES)
+		if(element[CONTENT_TYPE] !== CONTENT_TYPE_ENUM.IMAGES)
 			quizzMap[currentId]["question"]["text"] = { "default" : element[LANGUAGE_DEFAULT], "fr" :  element[LANGUAGE_FR], "en" :  element[LANGUAGE_EN], "de" :  element[LANGUAGE_DE] };
+		
+		if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.PHY && element[COMPL] !== undefined){
+			if(element[COMPL] !== undefined)
+				var informations = element[COMPL].replace("[","").replace("]","").split(";");
+				quizzMap[currentId]["question"]["area"] = {"zone" : informations[0], "position" : {"x" : informations[1], "y" : informations[2]}}
+		}
+
+
 		quizzMap[currentId]["responses"] = [];
 		
 	//test if is answer, same id than last question, question is defined and is defined
@@ -60,11 +77,12 @@ for(var index in json_sheet){
 
 		var response = {};
 		response["type"] = element[CONTENT_TYPE];
-		
-		if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT){
-			response["text"] = { "default" : element[LANGUAGE_DEFAULT], "fr" :  element[LANGUAGE_FR], "en" :  element[LANGUAGE_EN], "de" :  element[LANGUAGE_DE] };
-		}else if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.IMAGE){
 
+		if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT || element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.PICTO){
+			response["text"] = { "default" : element[LANGUAGE_DEFAULT], "fr" :  element[LANGUAGE_FR], "en" :  element[LANGUAGE_EN], "de" :  element[LANGUAGE_DE] };
+			if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.PICTO)
+				response["image"] = element[COMPL]
+		}else if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.IMAGE){
 			response["image"] = element[LANGUAGE_DEFAULT];
 		}
 
