@@ -28,6 +28,7 @@ var CONTENT_TYPE_ENUM = {
 	TEXT_IMAGES : "TEXT_IMAGES",
 	IMAGES : "IMAGES",
 	PHY : "PHY",
+	QUOTES : "QUOTES",
 	//QUESTIONS || RESPONSES
 	TEXT : "TEXT",
 	//RESPONSES
@@ -48,6 +49,8 @@ for(var index in json_sheet){
 				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.IMAGES //IMAGES
 				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT_IMAGES //TEXT_IMAGES
 				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.PHY //PHYSIOGNOMY
+				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.IMAGE //ONE IMAGE
+				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.QUOTES // QUOTES
 		)){
 		currentId = element[ID];
 
@@ -60,10 +63,17 @@ for(var index in json_sheet){
 		if(element[CONTENT_TYPE] !== CONTENT_TYPE_ENUM.IMAGES)
 			quizzMap[currentId]["question"]["text"] = { "default" : element[LANGUAGE_DEFAULT], "fr" :  element[LANGUAGE_FR], "en" :  element[LANGUAGE_EN], "de" :  element[LANGUAGE_DE] };
 		
-		if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.PHY && element[COMPL] !== undefined){
-			if(element[COMPL] !== undefined)
+		if(element[COMPL] !== undefined){
+			if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.PHY){
 				var informations = element[COMPL].replace("[","").replace("]","").split(";");
 				quizzMap[currentId]["question"]["area"] = {"zone" : informations[0], "position" : {"x" : informations[1], "y" : informations[2]}}
+				if(informations[3] !== undefined){
+					quizzMap[currentId]["question"]["area"]["icon"] = informations[3];
+				}
+			}else if(element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.IMAGE){
+				quizzMap[currentId]["question"]["image"] = element[COMPL];
+			}
+
 		}
 
 
