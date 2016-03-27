@@ -50,7 +50,7 @@ for(var index in json_sheet){
 				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.TEXT_IMAGES //TEXT_IMAGES
 				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.PHY //PHYSIOGNOMY
 				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.IMAGE //ONE IMAGE
-				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.QUOTES // QUOTES
+				//|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.QUOTES // QUOTES
 		)){
 		currentId = element[ID];
 
