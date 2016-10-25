@@ -41,7 +41,8 @@ var CONTENT_TYPE_ENUM = {
 	//RESPONSES
 	PICTO : "PICTO",
 	IMAGE : "IMAGE",
-	QUOTE : "QUOTE"
+	QUOTE : "QUOTE",
+	CLOUD : "CLOUD"
 }
 
 function renderText(element) {
@@ -70,11 +71,38 @@ function renderQuote(element) {
 	return tradElement	
 } 
 
+function renderCloud(element) {
+
+	traductedCloud = []
+
+	for( languageIndex in LANGUAGE_MAP ) {
+		languageElement = LANGUAGE_MAP[languageIndex]
+
+		var cloud = element[languageElement["key"]]
+		if (cloud !== undefined){
+			cloud = cloud.trim().replace("[","").replace("]","");
+			cloud = cloud.split(";")
+
+			for( i in cloud ){
+				if(traductedCloud[i] === undefined) {
+					traductedCloud[i] = {};
+				}
+
+				traductedCloud[i][languageElement["value"]] = cloud[i];
+			}
+		}
+		
+	}
+
+	return traductedCloud	
+}
+
 // Loop 
 for(var index in json_sheet){
 	element = json_sheet[index];
 
 	//Test if is question, id never used and question type is defined
+	console.log(element)
 	if(	element[ELEMENT_TYPE].trim() === ELEMENT_TYPE_ENUM.Q 
 			&& currentId !== element[ID].trim()
 			&& quizzMap[element[ID]] === undefined 
@@ -85,6 +113,7 @@ for(var index in json_sheet){
 				|| element[CONTENT_TYPE].trim() === CONTENT_TYPE_ENUM.PHY //PHYSIOGNOMY
 				|| element[CONTENT_TYPE].trim() === CONTENT_TYPE_ENUM.IMAGE //ONE IMAGE
 				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.QUOTES // QUOTES
+				|| element[CONTENT_TYPE] === CONTENT_TYPE_ENUM.CLOUD // CLOUD
 		)){
 
 		currentId = element[ID].trim();
@@ -109,7 +138,7 @@ for(var index in json_sheet){
 				quizzMap[currentId]["question"]["image"] = element[COMPL].trim();
 			}
 
-		}
+		}	
 
 
 		quizzMap[currentId]["responses"] = [];
@@ -137,6 +166,8 @@ for(var index in json_sheet){
 			response["image"] = element[LANGUAGE_DEFAULT].trim();
 		} else if(element[CONTENT_TYPE].trim() === CONTENT_TYPE_ENUM.QUOTE){
 			response["quote"] = renderQuote(element)
+		} else if(element[CONTENT_TYPE].trim() === CONTENT_TYPE_ENUM.CLOUD){
+			response["cloud"] = renderCloud(element)
 		}
 
 		var quizzResponsePoints = [];

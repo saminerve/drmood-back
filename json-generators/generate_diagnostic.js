@@ -14,7 +14,7 @@ var json_sheet = XLSX.utils.sheet_to_json(worksheet);
 var results = {};
 var element;
 
-var ELEMENT_TYPE = "ELEMENT"; var EMOTIONS = "EMO"; var PICTO = "PICTO"; var LANGUAGE_FR = "FR"; var LANGUAGE_FR_FEM = "FR_FEM"; var LANGUAGE_EN = "EN"; var LANGUAGE_DE = "DE";
+var ELEMENT_TYPE = "ELEMENT"; var EMOTIONS = "EMO"; var PICTO = "PICTO"; var LANGUAGE_DEFAULT = "DEFAULT"; var LANGUAGE_FR = "FR"; var LANGUAGE_FR_FEM = "FR_FEM"; var LANGUAGE_EN = "EN"; var LANGUAGE_DE = "DE";
 
 var ELEMENT_TYPE_ENUM = {
 	DIAGNOSTIC : "DIAG",
@@ -36,23 +36,23 @@ for(var index in json_sheet){
 
 		if(results[emotion] == undefined){
 			results[emotion] = {"diagnostic" : {},"analyse":{},"advices":[]};
-		}
-		
+		}	
 
-		text =  {"fr" :  element[LANGUAGE_FR], "fr_fem" :  element[LANGUAGE_FR_FEM], "en" :  element[LANGUAGE_EN], "de" :  element[LANGUAGE_DE] };
-		
+		text =  {"default": element[LANGUAGE_DEFAULT], "fr" :  element[LANGUAGE_FR], "fr_fem" :  element[LANGUAGE_FR_FEM], "en" :  element[LANGUAGE_EN], "de" :  element[LANGUAGE_DE] };
 
+		node = element[ELEMENT_TYPE].trim()
 		
-		switch(element[ELEMENT_TYPE]){
+		switch(node){
 			case ELEMENT_TYPE_ENUM.DIAGNOSTIC:
 			case ELEMENT_TYPE_ENUM.ANALYSE:
-				results[emotion][ATTRIBUTS_ELEMENT_TYPE[element[ELEMENT_TYPE]]] = {"text" : text};
+				results[emotion][ATTRIBUTS_ELEMENT_TYPE[node]] = {"text" : text};
 			break;
 			case ELEMENT_TYPE_ENUM.ADVICE:
-				if(results[emotion][ATTRIBUTS_ELEMENT_TYPE[element[ELEMENT_TYPE]]] == undefined){
-					results[emotion][ATTRIBUTS_ELEMENT_TYPE[element[ELEMENT_TYPE]]] = [];
+				if(results[emotion][ATTRIBUTS_ELEMENT_TYPE[node]] == undefined){
+					results[emotion][ATTRIBUTS_ELEMENT_TYPE[node]] = [];
 				}
-				results[emotion][ATTRIBUTS_ELEMENT_TYPE[element[ELEMENT_TYPE]]].push({"text" : text, "picto" : element[PICTO]});
+
+				results[emotion][ATTRIBUTS_ELEMENT_TYPE[node]].push({"text" : text, "picto" : element[PICTO]});
 			break;
 		}
 	} 
