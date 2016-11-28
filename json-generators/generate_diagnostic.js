@@ -14,7 +14,7 @@ var json_sheet = XLSX.utils.sheet_to_json(worksheet);
 var results = {};
 var element;
 
-var ELEMENT_TYPE = "ELEMENT"; var EMOTIONS = "EMO"; var PICTO = "PICTO"; var LANGUAGE_DEFAULT = "DEFAULT"; var LANGUAGE_FR = "FR"; var LANGUAGE_FR_FEM = "FR_FEM"; var LANGUAGE_EN = "EN"; var LANGUAGE_DE = "DE";
+var ELEMENT_TYPE = "ELEMENT"; var EMOTIONS = "EMO"; var TYPE = "TYPE"; var LANGUAGE_DEFAULT = "DEFAULT"; var LANGUAGE_FR = "FR"; var LANGUAGE_FR_FEM = "FR_FEM"; var LANGUAGE_EN = "EN"; var LANGUAGE_DE = "DE";
 
 var ELEMENT_TYPE_ENUM = {
 	DIAGNOSTIC : "DIAG",
@@ -24,19 +24,31 @@ var ELEMENT_TYPE_ENUM = {
 
 var ATTRIBUTS_ELEMENT_TYPE = { "DIAG" : "diagnostic", "ANA" : "analyse", "ADV" : "advices"};
 
+var ATTRIBUTS_ADVICE_TYPE = { 
+	"PSYCHO" : "psycho",
+ 	"NUTRI" : "nutriton",
+ 	"PRAT" : "practice",
+ 	"SCIENCE" : "science",
+ 	"FILM" : "movie",
+ 	"MUSIC" : "music",
+ 	"BOOK" : "book"
+ }
+
 // Loop 
 for(var index in json_sheet){
 	element = json_sheet[index];
 	var emotion;
 	var text;
-
 	
 	if(element[EMOTIONS] != undefined && element[ELEMENT_TYPE] != undefined){
 		emotion = element[EMOTIONS].trim();
 
+
 		if(results[emotion] == undefined){
-			results[emotion] = {"diagnostic" : {},"analyse":{},"advices":[]};
+			results[emotion] = {"diagnostic" : {},"analyse":{},"advices":{}};
 		}	
+
+
 
 		text =  {"default": element[LANGUAGE_DEFAULT], "fr" :  element[LANGUAGE_FR], "fr_fem" :  element[LANGUAGE_FR_FEM], "en" :  element[LANGUAGE_EN], "de" :  element[LANGUAGE_DE] };
 
@@ -48,11 +60,19 @@ for(var index in json_sheet){
 				results[emotion][ATTRIBUTS_ELEMENT_TYPE[node]] = {"text" : text};
 			break;
 			case ELEMENT_TYPE_ENUM.ADVICE:
-				if(results[emotion][ATTRIBUTS_ELEMENT_TYPE[node]] == undefined){
-					results[emotion][ATTRIBUTS_ELEMENT_TYPE[node]] = [];
+				var adviceNode = ATTRIBUTS_ELEMENT_TYPE[node]
+				var adviceTheme = ATTRIBUTS_ADVICE_TYPE[element[TYPE]]
+
+				if(adviceTheme == undefined) {
+					continue;
 				}
 
-				results[emotion][ATTRIBUTS_ELEMENT_TYPE[node]].push({"text" : text, "picto" : element[PICTO]});
+				if(results[emotion][adviceNode][adviceTheme] == undefined) {
+					results[emotion][adviceNode][adviceTheme] = []
+				}
+				
+				results[emotion][adviceNode][adviceTheme].push({"text" : text});
+
 			break;
 		}
 	} 
