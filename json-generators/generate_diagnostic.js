@@ -28,7 +28,7 @@ var ATTRIBUTS_ADVICE_TYPE = {
 	"PSYCHO" : "psycho",
  	"NUTRI" : "nutriton",
  	"PRAT" : "practice",
- 	"SCIENCE" : "science",
+ 	"SCIEN" : "science",
  	"FILM" : "movie",
  	"MUSIC" : "music",
  	"BOOK" : "book"
